@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>გადაუდებელი შეტყობინება 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Caveat:wght@400;700&family=Noto+Serif+Georgian:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rose:#e8325a; --blush:#ffd6e0; --cream:#fff9f0;
+  --gold:#c9962a; --dark:#1a0a10; --soft:#8b3a52;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);font-family:'Noto Serif Georgian',serif;min-height:100vh;overflow-x:hidden;font-size:16px;}
+
+/* BG */
+.bg-hearts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bg-heart{position:absolute;opacity:.08;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{transform:translateY(110vh) rotate(0deg);opacity:0;}10%{opacity:.08;}90%{opacity:.08;}100%{transform:translateY(-10vh) rotate(360deg);opacity:0;}}
+
+/* TRAIL */
+.trail-emoji{position:fixed;pointer-events:none;z-index:9990;font-size:1.3rem;animation:trailFade .7s ease forwards;}
+@keyframes trailFade{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-50px) scale(.4);}}
+
+/* CONFETTI */
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:9999;}
+
+/* SUCCESS */
+#success-overlay{display:none;position:fixed;inset:0;background:linear-gradient(160deg,#e8325a,#c0175a);z-index:9998;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;animation:fadeIn .4s ease;}
+#success-overlay.show{display:flex;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.big-emoji{font-size:5rem;margin-bottom:12px;animation:bigBounce 1s infinite;}
+@keyframes bigBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+#success-overlay h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,8vw,3.5rem);color:#fff;margin-bottom:12px;line-height:1.2;}
+#success-overlay p{font-family:'Caveat',cursive;font-size:clamp(1.1rem,5vw,1.5rem);color:rgba(255,255,255,.9);max-width:400px;line-height:1.6;margin-bottom:28px;}
+.close-overlay{background:#fff;color:var(--rose);border:none;border-radius:999px;padding:14px 32px;font-size:1rem;font-family:'Noto Serif Georgian',serif;cursor:pointer;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.2);}
+
+/* FAKE NOTIF */
+#fake-notif{position:fixed;top:-90px;left:50%;transform:translateX(-50%);background:#1c1c1e;color:#fff;border-radius:16px;padding:12px 18px;z-index:9997;width:calc(100% - 32px);max-width:380px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);transition:top .5s cubic-bezier(.34,1.56,.64,1);font-size:.85rem;}
+#fake-notif.show{top:16px;}
+.notif-icon{font-size:2rem;}
+.notif-body{flex:1;}
+.notif-app{font-size:.72rem;color:rgba(255,255,255,.5);margin-bottom:2px;}
+.notif-title{font-weight:700;margin-bottom:2px;}
+.notif-text{color:rgba(255,255,255,.85);}
+
+/* TYPING */
+.typing-bubble{display:inline-flex;align-items:center;gap:5px;background:#fff;border:2px solid var(--blush);border-radius:999px;padding:10px 18px;margin:8px auto;box-shadow:0 2px 12px rgba(232,50,90,.1);}
+.typing-dot{width:8px;height:8px;background:var(--rose);border-radius:50%;animation:typingDot 1.2s infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+
+/* LAYOUT */
+.section{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px 16px 28px;}
+.card{background:#fff;border-radius:22px;padding:22px 16px;margin:0 16px 20px;box-shadow:0 4px 24px rgba(232,50,90,.1);position:relative;z-index:1;max-width:480px;margin-left:auto;margin-right:auto;}
+
+/* HERO */
+.hero{position:relative;z-index:1;text-align:center;padding:44px 16px 20px;animation:fadeSlideDown 1s ease both;}
+@keyframes fadeSlideDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+.badge{display:inline-block;background:var(--rose);color:#fff;font-family:'Caveat',cursive;font-size:.9rem;padding:5px 16px;border-radius:999px;letter-spacing:1.5px;margin-bottom:18px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,9vw,3.5rem);color:var(--dark);line-height:1.15;margin-bottom:10px;}
+h1 em{color:var(--rose);font-style:italic;}
+.subtitle{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--soft);margin-bottom:8px;line-height:1.5;}
+.heart-wrap{margin:18px auto;width:110px;height:110px;animation:heartbeat 1.4s infinite ease-in-out;}
+@keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.18)}28%{transform:scale(1)}42%{transform:scale(1.12)}56%{transform:scale(1)}}
+.big-heart{font-size:6.5rem;line-height:1;display:block;filter:drop-shadow(0 4px 18px rgba(232,50,90,.45));}
+
+/* COUNTER */
+.counter-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+.count-item{text-align:center;}
+.count-num{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--dark);display:block;line-height:1;}
+.count-label{font-family:'Caveat',cursive;font-size:.9rem;color:var(--soft);}
+.card-title{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);text-align:center;margin-bottom:14px;}
+
+/* REASONS */
+.section-title{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--dark);text-align:center;margin-bottom:18px;}
+.section-title span{color:var(--rose);}
+.reasons-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.reason-card{background:#fff;border:2px solid var(--blush);border-radius:16px;padding:16px 12px;text-align:center;box-shadow:3px 5px 14px rgba(232,50,90,.08);transition:transform .2s;}
+.reason-card:active{transform:scale(.95);}
+.reason-card .icon{font-size:1.8rem;margin-bottom:7px;display:block;}
+.reason-card p{font-size:.78rem;color:var(--soft);line-height:1.4;}
+
+/* METER */
+.fun-box{background:linear-gradient(135deg,#fff0f5,#fff9f0);border:2px dashed var(--rose);border-radius:22px;padding:22px 16px;margin:0 16px 20px;position:relative;z-index:1;text-align:center;max-width:480px;margin-left:auto;margin-right:auto;}
+.meter-row{margin-bottom:12px;text-align:left;}
+.meter-label{font-family:'Caveat',cursive;font-size:.95rem;color:var(--dark);margin-bottom:5px;}
+.meter-bar{background:var(--blush);border-radius:999px;height:12px;overflow:hidden;}
+.meter-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:999px;animation:grow 2s ease both;}
+@keyframes grow{from{width:0}}
+
+/* CHAT */
+.chat-msg{display:flex;margin-bottom:10px;align-items:flex-end;gap:8px;}
+.chat-msg.me{flex-direction:row-reverse;}
+.bubble{max-width:74%;border-radius:18px;padding:10px 13px;font-size:.88rem;line-height:1.5;animation:popIn .3s ease both;}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.bubble.them{background:var(--blush);color:var(--dark);border-bottom-left-radius:4px;}
+.bubble.me{background:var(--rose);color:#fff;border-bottom-right-radius:4px;}
+.avatar{font-size:1.5rem;flex-shrink:0;}
+
+/* SCRATCH */
+.scratch-card-outer{position:relative;width:240px;height:120px;margin:0 auto 12px;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(232,50,90,.2);}
+.scratch-reveal{position:absolute;inset:0;background:linear-gradient(135deg,var(--rose),#c0175a);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.2rem;color:#fff;padding:12px;text-align:center;line-height:1.4;}
+#scratch-canvas{position:absolute;inset:0;cursor:pointer;touch-action:none;}
+.scratch-hint{font-family:'Caveat',cursive;font-size:.9rem;color:var(--soft);}
+
+/* QUIZ */
+.quiz-progress{font-family:'Caveat',cursive;font-size:.95rem;color:var(--soft);margin-bottom:5px;}
+.progress-bar{background:var(--blush);border-radius:999px;height:6px;margin-bottom:14px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--rose);border-radius:999px;transition:width .5s ease;}
+.quiz-q{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--soft);margin-bottom:18px;line-height:1.5;}
+.quiz-options{display:flex;flex-direction:column;gap:9px;}
+.quiz-btn{border:2px solid var(--blush);background:var(--cream);color:var(--dark);font-family:'Noto Serif Georgian',serif;font-size:.92rem;padding:12px 14px;border-radius:14px;cursor:pointer;transition:all .15s;text-align:left;width:100%;}
+.quiz-btn:active{transform:scale(.98);}
+.quiz-btn.correct{background:#d4f5d4;border-color:#4caf50;color:#1a4a1a;animation:bounce .4s;}
+.quiz-btn.wrong{background:#fde8e8;border-color:var(--rose);animation:shake .4s;}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.quiz-result{font-family:'Caveat',cursive;font-size:1.1rem;margin-top:10px;min-height:30px;color:var(--rose);}
+.quiz-score-box{background:linear-gradient(135deg,var(--rose),#c0175a);color:#fff;border-radius:14px;padding:18px 14px;margin-top:10px;text-align:center;}
+.score-num{font-family:'Playfair Display',serif;font-size:2.8rem;}
+
+/* PROPOSAL */
+.proposal{position:relative;z-index:1;text-align:center;padding:16px 16px 56px;}
+.proposal-card{background:linear-gradient(160deg,var(--rose),#c0175a);color:#fff;border-radius:26px;padding:36px 18px;max-width:480px;margin:0 auto;box-shadow:0 14px 48px rgba(232,50,90,.35);position:relative;overflow:hidden;}
+.proposal-card::before{content:'❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️';position:absolute;top:-14px;left:-16px;right:-16px;font-size:1.6rem;opacity:.1;letter-spacing:2px;line-height:2.5;word-break:break-all;}
+.proposal h2{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,6vw,2.5rem);margin-bottom:12px;position:relative;}
+.proposal p{font-family:'Caveat',cursive;font-size:1.15rem;opacity:.92;line-height:1.7;margin-bottom:26px;position:relative;}
+.buttons{display:flex;flex-direction:column;gap:10px;align-items:center;position:relative;}
+.btn-yes{background:#fff;color:var(--rose);font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;padding:15px 36px;border:none;border-radius:999px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.2);width:100%;max-width:280px;}
+.btn-yes:active{transform:scale(.97);}
+.btn-no{background:transparent;color:rgba(255,255,255,.65);font-family:'Caveat',cursive;font-size:1rem;padding:11px 22px;border:2px solid rgba(255,255,255,.3);border-radius:999px;cursor:pointer;}
+
+/* NO MODAL */
+#no-modal{display:none;position:fixed;inset:0;background:rgba(26,10,16,.87);z-index:9995;align-items:center;justify-content:center;padding:20px;}
+#no-modal.show{display:flex;}
+.no-modal-card{background:#fff;border-radius:22px;padding:28px 18px;text-align:center;width:100%;max-width:350px;animation:popIn .35s ease both;}
+.modal-emoji{font-size:3.2rem;margin-bottom:10px;display:block;}
+.no-modal-card h3{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--dark);margin-bottom:8px;}
+.no-modal-card p{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--soft);margin-bottom:20px;line-height:1.5;}
+.modal-btns{display:flex;flex-direction:column;gap:10px;}
+.modal-ok{background:var(--rose);color:#fff;border:none;border-radius:999px;padding:13px;font-family:'Noto Serif Georgian',serif;font-size:.95rem;cursor:pointer;}
+.modal-cancel{background:transparent;color:var(--soft);border:2px solid var(--blush);border-radius:999px;padding:11px;font-family:'Caveat',cursive;font-size:.95rem;cursor:pointer;}
+
+/* VIBRATE */
+.vibrate{animation:vibrate .5s linear;}
+@keyframes vibrate{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-4px)}20%,40%,60%,80%{transform:translateX(4px)}}
+
+/* LOVE LETTER */
+.letter-box{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--dark);line-height:1.8;background:#fffdf5;border:1px solid var(--blush);border-radius:14px;padding:18px;text-align:left;position:relative;}
+.letter-box::before{content:'"';font-size:4rem;color:var(--rose);opacity:.15;position:absolute;top:-10px;left:8px;line-height:1;}
+
+/* POLL */
+.poll-option{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;}
+.poll-bar-wrap{flex:1;background:var(--blush);border-radius:999px;height:28px;overflow:hidden;position:relative;}
+.poll-bar-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:999px;transition:width .8s ease;display:flex;align-items:center;padding-left:10px;color:#fff;font-family:'Caveat',cursive;font-size:.85rem;white-space:nowrap;}
+.poll-label{font-family:'Caveat',cursive;font-size:1rem;color:var(--dark);min-width:24px;}
+
+.action-btn{display:block;width:100%;background:var(--rose);color:#fff;border:none;border-radius:14px;padding:12px;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;margin-top:14px;text-align:center;}
+.action-btn:active{transform:scale(.97);}
+</style>
+</head>
+<body>
+
+<div class="bg-hearts" id="bgHearts"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<!-- FAKE NOTIF -->
+<div id="fake-notif">
+  <div class="notif-icon">💌</div>
+  <div class="notif-body">
+    <div class="notif-app">ᲒᲣᲚᲘᲡ ᲡᲐᲘᲢᲘ • ახლავე</div>
+    <div class="notif-title">შენთვის გადაუდებელი შეტყობინება</div>
+    <div class="notif-text">გახსენი და წაიკითხე... 👀</div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div id="success-overlay">
+  <div class="big-emoji">🥳</div>
+  <h2>არარა!!! ჰო გითხრა!!! 🎉</h2>
+  <p>ვიცოდი, ვიცოდი, ვიცოდი!!!<br>ეს ყველაზე ბედნიერი წამია! 🌹💕</p>
+  <button class="close-overlay" onclick="closeSuccess()">❤️ გამარჯობა, შეყვარებულო!</button>
+</div>
+
+<!-- NO MODAL -->
+<div id="no-modal">
+  <div class="no-modal-card" id="noModalCard">
+    <span class="modal-emoji" id="no-emoji">😭</span>
+    <h3 id="no-title">ჩო, ჩო, ჩო...</h3>
+    <p id="no-text">ეს ღილაკი არ მუშაობს. სისტემური შეცდომა. სცადე "დიახ".</p>
+    <div class="modal-btns">
+      <button class="modal-ok" onclick="closeNoModal()">კარგი, კარგი 😅</button>
+      <button class="modal-cancel" onclick="tryNoAgain()">მაინც "არა" მინდა...</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="badge">⚠️ გადაუდებელი შეტყობინება ⚠️</div>
+  <h1>გამარჯობა, <em>შენ</em>!</h1>
+  <div class="subtitle">ეს საიტი შენთვის გააკეთა ერთმა ძალიან მნიშვნელოვანმა ადამიანმა 🌹</div>
+  <div class="heart-wrap"><span class="big-heart">❤️</span></div>
+  <div class="typing-bubble">
+    <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+  </div>
+  <p style="font-family:'Caveat',cursive;font-size:.95rem;color:var(--soft);margin-top:4px">ვინმე ბეჭდავს შენთვის...</p>
+</div>
+
+<!-- ═══ COUNTER ═══ -->
+<div class="card">
+  <div class="card-title">⏱️ ამ გრძნობის სიძველე</div>
+  <div class="counter-row">
+    <div class="count-item"><span class="count-num" id="c-days">0</span><span class="count-label">დღე</span></div>
+    <div class="count-item"><span class="count-num" id="c-hours">0</span><span class="count-label">საათი</span></div>
+    <div class="count-item"><span class="count-num" id="c-mins">0</span><span class="count-label">წუთი</span></div>
+    <div class="count-item"><span class="count-num" id="c-secs">0</span><span class="count-label">წამი</span></div>
+  </div>
+  <p style="font-family:'Caveat',cursive;font-size:.82rem;color:var(--soft);text-align:center;margin-top:8px">* ეს ციფრი ჩვენ გვეხება 💕</p>
+</div>
+
+<!-- ═══ REASONS ═══ -->
+<div class="section">
+  <div class="section-title">რატომ <span>სწორედ შენ</span>?</div>
+  <div class="reasons-grid">
+    <div class="reason-card"><span class="icon">😂</span><p>შენი სიცილი ოთახს ანათებს — ჩემი განწყობა მყისვე ყვავის</p></div>
+    <div class="reason-card"><span class="icon">🧠</span><p>შენთან საუბარი ჩემს ტვინს ემანტებს</p></div>
+    <div class="reason-card"><span class="icon">🌟</span><p>უბრალოდ შენ ხარ — ეს საკმარისია ✨</p></div>
+    <div class="reason-card"><span class="icon">🐾</span><p>ნებისმიერ დროს — შენ გვერდით ვარ</p></div>
+    <div class="reason-card"><span class="icon">☕</span><p>შენთანაა ყოველი დილა უკეთესი</p></div>
+    <div class="reason-card"><span class="icon">🎵</span><p>ჩვენს სიჩუმეშიც კი კარგი მელოდია ისმის</p></div>
+    <div class="reason-card"><span class="icon">🔥</span><p>შენ გამიგებ — სხვა ვინ გამიგებს ასე?</p></div>
+    <div class="reason-card"><span class="icon">💫</span><p>ყველა ადამიანიდან შენი ყოფნა მინდა</p></div>
+  </div>
+</div>
+
+<!-- ═══ LOVE LETTER ═══ -->
+<div class="card">
+  <div class="card-title">✉️ წერილი (ოფიციალური)</div>
+  <div class="letter-box" id="letter-box">
+    <span id="letter-text"></span><span id="cursor" style="animation:blink 1s infinite;">|</span>
+  </div>
+  <style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}</style>
+</div>
+
+<!-- ═══ CHAT PRANK ═══ -->
+<div class="card">
+  <div class="card-title">💬 ჩვენი "ნორმალური" საუბარი</div>
+  <div id="chat-container"></div>
+  <button class="action-btn" onclick="nextChat()" id="chat-btn">შემდეგი ►</button>
+</div>
+
+<!-- ═══ FUN METER ═══ -->
+<div class="fun-box">
+  <div style="font-family:'Caveat',cursive;font-size:1.4rem;color:var(--rose);margin-bottom:14px;">🔬 მეცნიერული ანალიზი</div>
+  <div class="meter-row"><div class="meter-label">😍 სიმპათია (ოფიციალური გაზომვა)</div><div class="meter-bar"><div class="meter-fill" style="width:100%"></div></div></div>
+  <div class="meter-row"><div class="meter-label">🎯 თავსებადობა</div><div class="meter-bar"><div class="meter-fill" style="width:99%;animation-delay:.3s"></div></div></div>
+  <div class="meter-row"><div class="meter-label">🧪 ქიმია ჩვენ შორის</div><div class="meter-bar"><div class="meter-fill" style="width:97%;animation-delay:.6s"></div></div></div>
+  <div class="meter-row"><div class="meter-label">🤦 ჩემი სიმამაცე ამის სათქმელად</div><div class="meter-bar"><div class="meter-fill" style="width:11%;animation-delay:.9s"></div></div></div>
+  <div class="meter-row"><div class="meter-label">💻 ნერვები საიტის გაკეთებისას</div><div class="meter-bar"><div class="meter-fill" style="width:99%;animation-delay:1.2s"></div></div></div>
+  <div class="meter-row"><div class="meter-label">🚫 "არა" ღილაკის მუშაობის შანსი</div><div class="meter-bar"><div class="meter-fill" style="width:0%;animation-delay:1.5s"></div></div></div>
+  <p style="font-family:'Caveat',cursive;font-size:.82rem;color:var(--soft);margin-top:10px">* კვლევა ჩატარდა ჩემს გულში. ნდობის ინტერვალი: 100%</p>
+</div>
+
+<!-- ═══ POLL ═══ -->
+<div class="card">
+  <div class="card-title">📊 გამოკითხვა (ანონიმური)</div>
+  <p style="font-family:'Caveat',cursive;font-size:1rem;color:var(--soft);margin-bottom:16px;text-align:center;">რა გინდა გააკეთო ამ საიტის ნახვის შემდეგ?</p>
+  <div id="poll-options"></div>
+  <p style="font-family:'Caveat',cursive;font-size:.8rem;color:var(--soft);text-align:center;margin-top:10px" id="poll-note">* დააჭირე ვარიანტს 😉</p>
+</div>
+
+<!-- ═══ SCRATCH ═══ -->
+<div class="card" style="text-align:center;">
+  <div class="card-title">🎰 გაფხეკე და გაიგე!</div>
+  <p style="font-family:'Caveat',cursive;font-size:.9rem;color:var(--soft);margin-bottom:14px;">თითით გაფხეკე ბარათი 👇</p>
+  <div class="scratch-card-outer">
+    <div class="scratch-reveal">❤️<br>შენ ხარ<br>ჩემი ერთადერთი!</div>
+    <canvas id="scratch-canvas" width="240" height="120"></canvas>
+  </div>
+  <p class="scratch-hint" id="scratch-hint">გაფხეკე ✋</p>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div class="card">
+  <div style="font-family:'Playfair Display',serif;font-size:1.45rem;color:var(--dark);text-align:center;margin-bottom:8px;">🧩 სავალდებულო ვიქტორინა</div>
+  <div class="quiz-progress" id="qProgress">კითხვა 1 / 8</div>
+  <div class="progress-bar"><div class="progress-fill" id="qBar" style="width:12.5%"></div></div>
+  <div class="quiz-q" id="qText"></div>
+  <div class="quiz-options" id="qOptions"></div>
+  <div class="quiz-result" id="qResult"></div>
+</div>
+
+<!-- ═══ PROPOSAL ═══ -->
+<div class="proposal">
+  <div class="proposal-card">
+    <h2>💌 ასე, მთავარ საქმეზე...</h2>
+    <p>ბევრი ვიფიქრე, ბევრი ვიყოყმანე,<br>მაგრამ ეს საიტი უფრო ადვილია<br>ვიდრე პირდაპირ თქმა 😅<br><br><strong>გახდი ჩემი შეყვარებული? 🌹</strong></p>
+    <div class="buttons">
+      <button class="btn-yes" onclick="onYes()">💖 დიახ, რა თქმა უნდა!</button>
+      <button class="btn-no" id="noBtn" onclick="onNo()">არა (შეეცადე 😏)</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── BG HEARTS ──
+const bg=document.getElementById('bgHearts');
+['❤️','💕','💗','💓','💖','💝','🌹','✨','🌸'].forEach(e=>{
+  for(let j=0;j<2;j++){
+    const h=document.createElement('span');
+    h.className='bg-heart';h.textContent=e;
+    h.style.left=Math.random()*100+'%';
+    h.style.fontSize=(1+Math.random()*2)+'rem';
+    h.style.animationDuration=(9+Math.random()*14)+'s';
+    h.style.animationDelay=-(Math.random()*22)+'s';
+    bg.appendChild(h);
+  }
+});
+
+// ── TOUCH/MOUSE TRAIL ──
+const trailE=['💕','💗','✨','🌸','💫','❤️','🌹'];
+let lastTouch=0;
+function spawnTrail(x,y){
+  if(Date.now()-lastTouch<100)return;
+  lastTouch=Date.now();
+  const el=document.createElement('span');
+  el.className='trail-emoji';
+  el.textContent=trailE[Math.floor(Math.random()*trailE.length)];
+  el.style.left=x-12+'px';el.style.top=y-12+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),700);
+}
+document.addEventListener('touchmove',e=>{const t=e.touches[0];spawnTrail(t.clientX,t.clientY);},{passive:true});
+document.addEventListener('mousemove',e=>spawnTrail(e.clientX,e.clientY));
+
+// ── FAKE NOTIFICATION ──
+setTimeout(()=>{
+  const n=document.getElementById('fake-notif');
+  n.classList.add('show');
+  if(navigator.vibrate)navigator.vibrate([100,50,100]);
+  setTimeout(()=>n.classList.remove('show'),4200);
+},1200);
+
+// ── COUNTER ──
+const startDate=new Date('2024-09-01T00:00:00');
+function updateCounter(){
+  const diff=new Date()-startDate;
+  document.getElementById('c-days').textContent=Math.floor(diff/86400000);
+  document.getElementById('c-hours').textContent=Math.floor((diff%86400000)/3600000);
+  document.getElementById('c-mins').textContent=Math.floor((diff%3600000)/60000);
+  document.getElementById('c-secs').textContent=Math.floor((diff%60000)/1000);
+}
+updateCounter();setInterval(updateCounter,1000);
+
+// ── TYPEWRITER LETTER ──
+const letterFull=`ძვირფასო,
+
+ეს წერილი ბევრი ხანია ჩემს თავში ბეჭდება... 
+მაგრამ ვერ ვბეჭდავდი — ხელი მიკანკალებდა.
+
+ამიტომ HTML-ი ვისწავლე. 
+ეს შენი salata. ჩემი love letter. 
+
+P.S. "არა" ღილაკი არ მუშაობს.
+ეს ბაგი არ არის — ეს ფიჩერია.
+
+სიყვარულით,
+შენი (მომავალი) შეყვარებული 🌹`;
+
+let lIdx=0;
+const lEl=document.getElementById('letter-text');
+function typeLetter(){
+  if(lIdx<letterFull.length){
+    lEl.textContent+=letterFull[lIdx++];
+    setTimeout(typeLetter,lIdx<30?60:28);
+  } else {
+    document.getElementById('cursor').style.display='none';
+  }
+}
+setTimeout(typeLetter,2000);
+
+// ── CHAT PRANK ──
+const chats=[
+  [{t:'them',a:'🧑',m:'გამარჯობა!'},{t:'me',a:'🥰',m:'გამარჯობა!! 😊'}],
+  [{t:'them',a:'🧑',m:'როგორ ხარ?'},{t:'me',a:'🥰',m:'შენ რომ ვხედავ — ყოველთვის კარგად 😅'}],
+  [{t:'them',a:'🧑',m:'ჰმ... 🤨'},{t:'me',a:'🥰',m:'ანუ... ე.ი. ნორმალურად ვარ. ნორმალურად.'}],
+  [{t:'them',a:'🧑',m:'კარგი. გობი შევჭამე ახლა'},{t:'me',a:'🥰',m:'შენ გობისაც კი ჭამ ლამაზად 💀'}],
+  [{t:'them',a:'🧑',m:'რა?? 😂'},{t:'me',a:'🥰',m:'...დაგიმზადო?'}],
+  [{t:'them',a:'🧑',m:'ეს ვიქ გიგზავნი 😭'},{t:'me',a:'🥰',m:'ეს საიტი ვიქ გიგზავნი 🫣'}],
+  [{t:'them',a:'🧑',m:'ეს სერიოზულია?'},{t:'me',a:'🥰',m:'მე? HTML? ბი? სერიოზულია.'}],
+];
+let chatIdx=0;
+function renderChat(msgs){
+  const c=document.getElementById('chat-container');
+  msgs.forEach((msg,i)=>setTimeout(()=>{
+    const row=document.createElement('div');
+    row.className='chat-msg '+(msg.t==='me'?'me':'');
+    row.innerHTML=`<span class="avatar">${msg.a}</span><div class="bubble ${msg.t}">${msg.m}</div>`;
+    c.appendChild(row);
+    c.scrollTop=c.scrollHeight;
+  },i*420));
+}
+function nextChat(){
+  if(chatIdx>=chats.length){
+    document.getElementById('chat-btn').textContent='🏁 ბოლო — ახლა ბოლო კითხვა ქვევითაა 😄';
+    document.getElementById('chat-btn').disabled=true;return;
+  }
+  renderChat(chats[chatIdx++]);
+  if(chatIdx>=chats.length)document.getElementById('chat-btn').textContent='🏁 ბოლო!';
+}
+nextChat();
+
+// ── POLL ──
+const pollData=[
+  {label:'💖 "დიახ" ვუთხრა!',pct:94},
+  {label:'🤔 ჯერ ვიფიქრე...',pct:5},
+  {label:'😂 ვიცინი',pct:1},
+  {label:'🏃 გავიქცევი',pct:0},
+];
+let pollVoted=false;
+function renderPoll(clickedIdx=-1){
+  const c=document.getElementById('poll-options');
+  c.innerHTML='';
+  pollData.forEach((p,i)=>{
+    const row=document.createElement('div');
+    row.className='poll-option';
+    row.innerHTML=`<span class="poll-label">${pollVoted?(p.pct+'%'):''}</span>
+      <div class="poll-bar-wrap"><div class="poll-bar-fill" style="width:${pollVoted?p.pct:0}%">${pollVoted&&p.pct>10?p.label:''}</div></div>`;
+    if(!pollVoted) row.style.cursor='pointer';
+    if(!pollVoted) row.onclick=()=>{
+      if(i!==0){
+        pollData[0].pct+=pollData[i].pct;
+        pollData[i].pct=0;
+      }
+      pollVoted=true;
+      renderPoll(i);
+      document.getElementById('poll-note').textContent=i===0?'✅ სწორი პასუხი! 🎉':'🔄 ხმა გადაითვალა... სწორ ვარიანტზე 😏';
+    };
+    if(!pollVoted){
+      const lbl=document.createElement('span');
+      lbl.style.cssText='font-family:Caveat,cursive;font-size:.95rem;color:var(--dark);flex:1;';
+      lbl.textContent=p.label;
+      row.appendChild(lbl);
+    }
+    c.appendChild(row);
+  });
+}
+renderPoll();
+
+// ── SCRATCH CARD ──
+(function(){
+  const canvas=document.getElementById('scratch-canvas');
+  const ctx=canvas.getContext('2d');
+  let scratching=false,done=false;
+  ctx.fillStyle='#a0a0a0';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#777';ctx.font='bold 15px sans-serif';ctx.textAlign='center';
+  ctx.fillText('გაფხეკე! 🤞',120,52);
+  ctx.fillText('★ ბედნიერი ბარათი ★',120,76);
+  let scratchArea=0;
+  function scratch(x,y){
+    if(done)return;
+    ctx.globalCompositeOperation='destination-out';
+    ctx.beginPath();ctx.arc(x,y,24,0,Math.PI*2);ctx.fill();
+    scratchArea+=Math.PI*24*24;
+    if(scratchArea>canvas.width*canvas.height*0.42){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      document.getElementById('scratch-hint').textContent='🎉 ნახე!';
+      done=true;
+    }
+  }
+  canvas.addEventListener('touchstart',e=>{scratching=true;e.preventDefault();},{passive:false});
+  canvas.addEventListener('touchend',()=>scratching=false);
+  canvas.addEventListener('touchmove',e=>{if(!scratching)return;e.preventDefault();const r=canvas.getBoundingClientRect(),t=e.touches[0];scratch(t.clientX-r.left,t.clientY-r.top);},{passive:false});
+  canvas.addEventListener('mousedown',()=>scratching=true);
+  canvas.addEventListener('mouseup',()=>scratching=false);
+  canvas.addEventListener('mousemove',e=>{if(!scratching)return;const r=canvas.getBoundingClientRect();scratch(e.clientX-r.left,e.clientY-r.top);});
+})();
+
+// ── QUIZ ──
+const questions=[
+  {q:'🤔 ეს საიტი რატომ გაკეთდა?',opts:['გასაჭირდება','სიყვარულის გამოხატვისთვის 💕','ბიზნეს პრეზენტაციაა','შემთხვევით'],correct:1,comment:'სწორია! ჭკვიანი ხარ 🥰'},
+  {q:'🌟 ვინ ხარ შენ ჩემთვის?',opts:['უბრალო მეგობარი','ყველაზე მნიშვნელოვანი ადამიანი 🌟','ერთი კოლეგა სხვათა შორის','უცნობი'],correct:1,comment:'100% სწორი! 🎯'},
+  {q:'💖 "გახდი ჩემი შეყვარებული?"-ზე სწორი პასუხი?',opts:['"ვნახოთ"','"არა, გმადლობ"','"ალბათ"','"დიახ, რა თქმა უნდა!" 💖'],correct:3,comment:'ნიჭიერი ხარ! 🎉'},
+  {q:'🤣 ამ საიტის "არა" ღილაკი...',opts:['ნორმალურად მუშაობს','Google-ზეა დარეგისტრირებული','ბრაუზერს ახურებს','არ მუშაობს — სისტემური შეცდომა 😄'],correct:3,comment:'ზუსტი დიაგნოზი! 😂'},
+  {q:'🔬 "ქიმია ჩვენ შორის" — მეცნიერული საზომი?',opts:['13%','42%','75%','97% და მზარდი 📈'],correct:3,comment:'ლაბორატორია ადასტურებს 🧪'},
+  {q:'🎰 გაფხეკის ბარათზე რა ეწერა?',opts:['ფულის მოგება','"შენ ხარ ჩემი ერთადერთი" ❤️','პიცის კუპონი','"ცადე ხელახლა"'],correct:1,comment:'გახსოვს! ❤️'},
+  {q:'📊 გამოკითხვაში რომელ ვარიანტს ირჩევდა ყველა?',opts:['"გავიქცევი"','"ვიცინი"','"ჯერ ვიფიქრე"','"დიახ ვუთხრა!" — 94% 💖'],correct:3,comment:'სტატისტიკა ლაპარაკობს! 📊'},
+  {q:'🌹 ბოლო: რა უნდა გაკეთდეს ამ საიტის ნახვის შემდეგ?',opts:['არაფერი','მეგობრებს გაუგზავნო','დაიძინო','ქვევით "დიახ" დააჭირო 💌'],correct:3,comment:'ყველა კითხვა ამისკენ მიდიოდა 🌹'},
+];
+let qIdx=0,score=0;
+function renderQ(){
+  const total=questions.length;
+  if(qIdx>=total){
+    document.getElementById('qProgress').textContent='დასრულდა! 🏆';
+    document.getElementById('qBar').style.width='100%';
+    document.getElementById('qText').textContent='';
+    document.getElementById('qOptions').innerHTML='';
+    const g=score>=7?'🌟 სრული ჩამპიონი!':score>=5?'👍 კარგი!':'😅 ამ ვიქტორინაში ყველა იგებს';
+    document.getElementById('qResult').innerHTML=`<div class="quiz-score-box"><div class="score-num">${score}/${total}</div><p>${g}<br>ახლა მთავარი კითხვა ქვევითაა 👇</p></div>`;
+    return;
+  }
+  const q=questions[qIdx];
+  document.getElementById('qProgress').textContent=`კითხვა ${qIdx+1} / ${total}`;
+  document.getElementById('qBar').style.width=((qIdx+1)/total*100)+'%';
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qResult').textContent='';
+  const c=document.getElementById('qOptions');c.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-btn';btn.textContent=opt;
+    btn.onclick=()=>{
+      c.querySelectorAll('.quiz-btn').forEach(b=>b.disabled=true);
+      if(i===q.correct){
+        btn.classList.add('correct');score++;
+        document.getElementById('qResult').textContent=q.comment;
+        setTimeout(()=>{qIdx++;renderQ();},1600);
+      } else {
+        btn.classList.add('wrong');
+        if(navigator.vibrate)navigator.vibrate(180);
+        document.getElementById('qResult').textContent='ოჩ... ეს არ არის სწორი 😄 ცადე ისევ!';
+        setTimeout(()=>{btn.classList.remove('wrong');btn.disabled=false;c.querySelectorAll('.quiz-btn').forEach(b=>b.disabled=false);document.getElementById('qResult').textContent='';},1200);
+      }
+    };
+    c.appendChild(btn);
+  });
+}
+renderQ();
+
+// ── NO BUTTON ──
+const noResponses=[
+  {emoji:'😭',title:'ჩო, ჩო, ჩო...',text:'ეს ღილაკი არ მუშაობს. სისტემური შეცდომა. სცადე "დიახ".'},
+  {emoji:'🙅',title:'გათიშულია!',text:'ეს ფუნქცია ამ ვერსიაში არ არის. Premium-ზე გადადი — ანუ, თქვი "დიახ".'},
+  {emoji:'📵',title:'სიგნალი არ არის',text:'"არა"-ს გამოგზავნა ვერ ხერხდება. ქსელი მხოლოდ "დიახ"-ს ატარებს.'},
+  {emoji:'🔧',title:'ტექნიკური სამუშაოები',text:'ამ ღილაკს ახლა ვამოწმებ. გამართვას სჭირდება... მარადიულობა.'},
+  {emoji:'🤖',title:'AI შეცდომა',text:'ხელოვნური ინტელექტი ამბობს: "არა" ვარიანტი სტატისტიკურად შეუძლებელია.'},
+  {emoji:'🌚',title:'ყველა გზა "დიახ"-ზე',text:'მათემატიკამ დაამტკიცა. ფიზიკამ დაამტკიცა. გულმა? ომგი.'},
+  {emoji:'🫣',title:'სარჩელი შეგიტანე',text:'ამ ღილაკის გამოყენების მცდელობა კანონდარღვევაა. ❤️-ის კოდექსის მუხლი 1.'},
+];
+let noCount=0;
+function onNo(){
+  const r=noResponses[Math.min(noCount,noResponses.length-1)];
+  document.getElementById('no-emoji').textContent=r.emoji;
+  document.getElementById('no-title').textContent=r.title;
+  document.getElementById('no-text').textContent=r.text;
+  document.getElementById('no-modal').classList.add('show');
+  if(navigator.vibrate)navigator.vibrate([80,40,80,40,80]);
+  const card=document.getElementById('noModalCard');
+  card.classList.remove('vibrate');void card.offsetWidth;card.classList.add('vibrate');
+  noCount++;
+}
+function closeNoModal(){document.getElementById('no-modal').classList.remove('show');}
+function tryNoAgain(){closeNoModal();setTimeout(onNo,300);}
+
+// ── YES ──
+function onYes(){
+  if(navigator.vibrate)navigator.vibrate([100,30,100,30,300]);
+  startConfetti();
+  setTimeout(()=>document.getElementById('success-overlay').classList.add('show'),500);
+}
+function closeSuccess(){
+  document.getElementById('success-overlay').classList.remove('show');
+  startConfetti();
+}
+
+// ── CONFETTI ──
+const cnv=document.getElementById('confetti-canvas');
+const ctx3=cnv.getContext('2d');
+let parts=[],aid;
+function startConfetti(){
+  cnv.width=window.innerWidth;cnv.height=window.innerHeight;parts=[];
+  const colors=['#e8325a','#ffd6e0','#c9962a','#ff6b9d','#fff','#f9a8d4','#ffcc00'];
+  for(let i=0;i<200;i++)parts.push({x:Math.random()*cnv.width,y:-20,vx:(Math.random()-.5)*7,vy:2+Math.random()*6,rot:Math.random()*360,vr:(Math.random()-.5)*10,size:5+Math.random()*10,color:colors[Math.floor(Math.random()*colors.length)],shape:Math.random()>.5?'rect':'circle'});
+  cancelAnimationFrame(aid);draw();
+}
+function draw(){
+  ctx3.clearRect(0,0,cnv.width,cnv.height);
+  parts.forEach(p=>{ctx3.save();ctx3.translate(p.x,p.y);ctx3.rotate(p.rot*Math.PI/180);ctx3.fillStyle=p.color;p.shape==='rect'?ctx3.fillRect(-p.size/2,-p.size/4,p.size,p.size/2):(ctx3.beginPath(),ctx3.arc(0,0,p.size/2,0,Math.PI*2),ctx3.fill());ctx3.restore();p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.vy+=.1;});
+  parts=parts.filter(p=>p.y<cnv.height+30);
+  if(parts.length>0)aid=requestAnimationFrame(draw);else ctx3.clearRect(0,0,cnv.width,cnv.height);
+}
+window.addEventListener('resize',()=>{cnv.width=window.innerWidth;cnv.height=window.innerHeight;});
+</script>
+</body>
+</html>
