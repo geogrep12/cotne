@@ -171,7 +171,6 @@ h1 em{color:var(--rose);font-style:italic;}
 <div id="fake-notif">
   <div class="notif-icon">💌</div>
   <div class="notif-body">
-    <div class="notif-app">ᲒᲣᲚᲘᲡ ᲡᲐᲘᲢᲘ • ახლავე</div>
     <div class="notif-title">შენთვის გადაუდებელი შეტყობინება</div>
     <div class="notif-text">გახსენი და წაიკითხე... 👀</div>
   </div>
@@ -180,8 +179,8 @@ h1 em{color:var(--rose);font-style:italic;}
 <!-- SUCCESS -->
 <div id="success-overlay">
   <div class="big-emoji">🥳</div>
-  <h2>არარა!!! ჰო გითხრა!!! 🎉</h2>
-  <p>ვიცოდი, ვიცოდი, ვიცოდი!!!<br>ეს ყველაზე ბედნიერი წამია! 🌹💕</p>
+  <h2>იეეეეეეეეეეეეეეეეეეეეეე 🎉</h2>
+  <p>დღეიდან ოფიციალურად ჩემი შეყვარებული ხარ ❤️</p>
   <button class="close-overlay" onclick="closeSuccess()">❤️ გამარჯობა, შეყვარებულო!</button>
 </div>
 
@@ -189,7 +188,7 @@ h1 em{color:var(--rose);font-style:italic;}
 <div id="no-modal">
   <div class="no-modal-card" id="noModalCard">
     <span class="modal-emoji" id="no-emoji">😭</span>
-    <h3 id="no-title">ჩო, ჩო, ჩო...</h3>
+    <h3 id="no-title">ოპა, ოპა, ოპა...</h3>
     <p id="no-text">ეს ღილაკი არ მუშაობს. სისტემური შეცდომა. სცადე "დიახ".</p>
     <div class="modal-btns">
       <button class="modal-ok" onclick="closeNoModal()">კარგი, კარგი 😅</button>
@@ -201,8 +200,8 @@ h1 em{color:var(--rose);font-style:italic;}
 <!-- ═══ HERO ═══ -->
 <div class="hero">
   <div class="badge">⚠️ გადაუდებელი შეტყობინება ⚠️</div>
-  <h1>გამარჯობა, <em>შენ</em>!</h1>
-  <div class="subtitle">ეს საიტი შენთვის გააკეთა ერთმა ძალიან მნიშვნელოვანმა ადამიანმა 🌹</div>
+  <h1>გამარჯობა, <em>ელენე</em>!</h1>
+  <div class="subtitle">ეს საიტი შენთვის გააკეთე 🌹</div>
   <div class="heart-wrap"><span class="big-heart">❤️</span></div>
   <div class="typing-bubble">
     <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
@@ -212,30 +211,16 @@ h1 em{color:var(--rose);font-style:italic;}
 
 <!-- ═══ COUNTER ═══ -->
 <div class="card">
-  <div class="card-title">⏱️ ამ გრძნობის სიძველე</div>
+  <div class="card-title">⏱️ ჩვენი გაცნობის დღიდან გასული დრო</div>
   <div class="counter-row">
     <div class="count-item"><span class="count-num" id="c-days">0</span><span class="count-label">დღე</span></div>
     <div class="count-item"><span class="count-num" id="c-hours">0</span><span class="count-label">საათი</span></div>
     <div class="count-item"><span class="count-num" id="c-mins">0</span><span class="count-label">წუთი</span></div>
     <div class="count-item"><span class="count-num" id="c-secs">0</span><span class="count-label">წამი</span></div>
   </div>
-  <p style="font-family:'Caveat',cursive;font-size:.82rem;color:var(--soft);text-align:center;margin-top:8px">* ეს ციფრი ჩვენ გვეხება 💕</p>
+  <p style="font-family:'Caveat',cursive;font-size:.82rem;color:var(--soft);text-align:center;margin-top:8px"> დრო 💕</p>
 </div>
 
-<!-- ═══ REASONS ═══ -->
-<div class="section">
-  <div class="section-title">რატომ <span>სწორედ შენ</span>?</div>
-  <div class="reasons-grid">
-    <div class="reason-card"><span class="icon">😂</span><p>შენი სიცილი ოთახს ანათებს — ჩემი განწყობა მყისვე ყვავის</p></div>
-    <div class="reason-card"><span class="icon">🧠</span><p>შენთან საუბარი ჩემს ტვინს ემანტებს</p></div>
-    <div class="reason-card"><span class="icon">🌟</span><p>უბრალოდ შენ ხარ — ეს საკმარისია ✨</p></div>
-    <div class="reason-card"><span class="icon">🐾</span><p>ნებისმიერ დროს — შენ გვერდით ვარ</p></div>
-    <div class="reason-card"><span class="icon">☕</span><p>შენთანაა ყოველი დილა უკეთესი</p></div>
-    <div class="reason-card"><span class="icon">🎵</span><p>ჩვენს სიჩუმეშიც კი კარგი მელოდია ისმის</p></div>
-    <div class="reason-card"><span class="icon">🔥</span><p>შენ გამიგებ — სხვა ვინ გამიგებს ასე?</p></div>
-    <div class="reason-card"><span class="icon">💫</span><p>ყველა ადამიანიდან შენი ყოფნა მინდა</p></div>
-  </div>
-</div>
 
 <!-- ═══ LOVE LETTER ═══ -->
 <div class="card">
@@ -346,7 +331,7 @@ setTimeout(()=>{
 },1200);
 
 // ── COUNTER ──
-const startDate=new Date('2024-09-01T00:00:00');
+const startDate=new Date('2025-10-23T00:11:00');
 function updateCounter(){
   const diff=new Date()-startDate;
   document.getElementById('c-days').textContent=Math.floor(diff/86400000);
@@ -357,7 +342,7 @@ function updateCounter(){
 updateCounter();setInterval(updateCounter,1000);
 
 // ── TYPEWRITER LETTER ──
-const letterFull=`ძვირფასო,
+const letterFull=`ელენე,
 
 ეს წერილი ბევრი ხანია ჩემს თავში ბეჭდება... 
 მაგრამ ვერ ვბეჭდავდი — ხელი მიკანკალებდა.
